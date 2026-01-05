@@ -7,6 +7,9 @@ Simple production-style Todo API built with Express.js, Mongoose, and MongoDB.
 - Copy environment file: `cp .env.example .env` (set `MONGO_URL` and optional `PORT`)
 - Run in dev with reload: `npm run dev`
 - Run in prod mode: `npm start`
+- Run with Docker Compose (includes MongoDB):
+  - `docker-compose up --build`
+  - Compose sets `MONGO_URL=mongodb://mongo:27017/todo_api`; app on `http://localhost:3000`
 
 ## API
 Base URL: `http://localhost:3000`
