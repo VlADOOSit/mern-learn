@@ -1,2 +1,5 @@
 *.yml
 *.yaml
+README.md
+docs/
+LEGACY.md
