@@ -6,13 +6,24 @@ import {
 	updateTaskController,
 	deleteTaskController
 } from '../controllers/taskController.js';
+import { validate } from '../middlewares/validate.js';
+import {
+	createTaskSchema,
+	listTasksQuerySchema,
+	taskIdParamsSchema,
+	updateTaskSchema
+} from '../validators/taskValidation.js';
 
 const router = Router();
 
-router.post('/', createTaskController);
-router.get('/', listTasksController);
-router.get('/:id', getTaskController);
-router.patch('/:id', updateTaskController);
-router.delete('/:id', deleteTaskController);
+router.post('/', validate({ body: createTaskSchema }), createTaskController);
+router.get('/', validate({ query: listTasksQuerySchema }), listTasksController);
+router.get('/:id', validate({ params: taskIdParamsSchema }), getTaskController);
+router.patch(
+	'/:id',
+	validate({ params: taskIdParamsSchema, body: updateTaskSchema }),
+	updateTaskController
+);
+router.delete('/:id', validate({ params: taskIdParamsSchema }), deleteTaskController);
 
 export default router;
