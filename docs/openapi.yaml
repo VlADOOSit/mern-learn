@@ -2,9 +2,9 @@ openapi: 3.0.3
 info:
   title: Tasks API
   version: 1.0.0
-  description: API for managing tasks.
+  description: API for managing tasks with JWT auth.
 servers:
-  - url: http://localhost:3000
+  - url: http://localhost:3001
 paths:
   /health:
     get:
@@ -23,6 +23,8 @@ paths:
   /api/tasks:
     get:
       summary: List tasks
+      security:
+        - bearerAuth: []
       parameters:
         - in: query
           name: status
@@ -53,6 +55,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TaskListResponse"
+        "401":
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "400":
           description: Validation error.
           content:
@@ -61,6 +69,8 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
     post:
       summary: Create task
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -74,6 +84,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TaskResponse"
+        "401":
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "400":
           description: Validation error.
           content:
@@ -83,6 +99,8 @@ paths:
   /api/tasks/{id}:
     get:
       summary: Get task by id
+      security:
+        - bearerAuth: []
       parameters:
         - $ref: "#/components/parameters/TaskId"
       responses:
@@ -92,6 +110,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TaskResponse"
+        "401":
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "400":
           description: Validation error.
           content:
@@ -106,6 +130,8 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
     patch:
       summary: Update task by id
+      security:
+        - bearerAuth: []
       parameters:
         - $ref: "#/components/parameters/TaskId"
       requestBody:
@@ -121,6 +147,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TaskResponse"
+        "401":
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "400":
           description: Validation error.
           content:
@@ -135,6 +167,8 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
     delete:
       summary: Delete task by id
+      security:
+        - bearerAuth: []
       parameters:
         - $ref: "#/components/parameters/TaskId"
       responses:
@@ -144,6 +178,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TaskResponse"
+        "401":
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "400":
           description: Validation error.
           content:
@@ -152,6 +192,113 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "404":
           description: Task not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/auth/register:
+    post:
+      summary: Register user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthRegisterRequest"
+      responses:
+        "201":
+          description: User registered.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Validation error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Email already in use.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/auth/login:
+    post:
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthLoginRequest"
+      responses:
+        "200":
+          description: Login successful.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Validation error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Invalid credentials.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/auth/refresh:
+    post:
+      summary: Refresh access token
+      description: Uses refresh token from httpOnly cookie or request body.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthRefreshRequest"
+      responses:
+        "200":
+          description: Access token refreshed.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthAccessResponse"
+        "401":
+          description: Invalid or expired refresh token.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/auth/logout:
+    post:
+      summary: Logout user
+      responses:
+        "200":
+          description: Logged out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthLogoutResponse"
+  /api/auth/me:
+    get:
+      summary: Get current user
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Current user.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MeResponse"
+        "401":
+          description: Unauthorized.
           content:
             application/json:
               schema:
@@ -167,6 +314,18 @@ components:
         pattern: "^[a-f\\d]{24}$"
       description: MongoDB ObjectId.
   schemas:
+    UserPublic:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 64f0c2b2a18f9e2d6b4b1234
+        email:
+          type: string
+          example: user@example.com
+        role:
+          type: string
+          example: user
     TaskStatus:
       type: string
       enum: [TODO, IN_PROGRESS, DONE]
@@ -176,6 +335,9 @@ components:
         _id:
           type: string
           example: 64f0c2b2a18f9e2d6b4b1234
+        userId:
+          type: string
+          example: 64f0c2b2a18f9e2d6b4b9999
         title:
           type: string
           example: Buy groceries
@@ -245,6 +407,63 @@ components:
               type: integer
             pages:
               type: integer
+    AuthRegisterRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+    AuthLoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+    AuthRefreshRequest:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+    AuthResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            user:
+              $ref: "#/components/schemas/UserPublic"
+            accessToken:
+              type: string
+    AuthAccessResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            accessToken:
+              type: string
+    AuthLogoutResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            ok:
+              type: boolean
+              example: true
+    MeResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/UserPublic"
     ErrorResponse:
       type: object
       properties:
@@ -253,3 +472,8 @@ components:
           example: Validation error
         details:
           type: object
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
