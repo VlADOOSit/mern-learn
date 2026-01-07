@@ -9,6 +9,11 @@ services:
     environment:
       - PORT=3001
       - MONGO_URL=mongodb://mongo:27017/todo_api
+      - JWT_ACCESS_SECRET=change_me_access
+      - JWT_REFRESH_SECRET=change_me_refresh
+      - JWT_ACCESS_EXPIRES_IN=15m
+      - JWT_REFRESH_EXPIRES_IN=7d
+      - COOKIE_SECURE=false
     depends_on:
       - mongo
 
