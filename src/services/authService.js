@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { User } from '../models/User.js';
+import { User } from '../models/userModel.js';
 import { AppError } from '../middlewares/errorHandler.js';
 import {
 	signAccessToken,

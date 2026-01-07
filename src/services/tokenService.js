@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { AppError } from '../middlewares/errorHandler.js';
-import { RefreshToken } from '../models/RefreshToken.js';
+import { RefreshToken } from '../models/refreshTokenModel.js';
 
 const requireEnv = (key) => {
 	const value = process.env[key];

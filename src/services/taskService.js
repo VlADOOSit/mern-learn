@@ -11,15 +11,15 @@ const validateObjectId = (id) => {
 	}
 };
 
-export const createTask = async (payload) => {
-	const task = await Task.create(payload);
+export const createTask = async (payload, userId) => {
+	const task = await Task.create({ ...payload, userId });
 	return task;
 };
 
-export const getTasks = async (query) => {
+export const getTasks = async (query, userId) => {
 	const { status, page = DEFAULT_PAGE, limit = DEFAULT_LIMIT, sort } = query;
 
-	const filters = {};
+	const filters = { userId };
 	if (status) {
 		filters.status = status;
 	}
@@ -53,18 +53,18 @@ export const getTasks = async (query) => {
 	};
 };
 
-export const getTaskById = async (id) => {
+export const getTaskById = async (id, userId) => {
 	validateObjectId(id);
-	const task = await Task.findById(id).lean();
+	const task = await Task.findOne({ _id: id, userId }).lean();
 	if (!task) {
 		throw new AppError('Task not found', 404);
 	}
 	return task;
 };
 
-export const updateTask = async (id, updates) => {
+export const updateTask = async (id, updates, userId) => {
 	validateObjectId(id);
-	const task = await Task.findByIdAndUpdate(id, updates, {
+	const task = await Task.findOneAndUpdate({ _id: id, userId }, updates, {
 		new: true,
 		runValidators: true
 	}).lean();
@@ -76,9 +76,9 @@ export const updateTask = async (id, updates) => {
 	return task;
 };
 
-export const deleteTask = async (id) => {
+export const deleteTask = async (id, userId) => {
 	validateObjectId(id);
-	const task = await Task.findByIdAndDelete(id).lean();
+	const task = await Task.findOneAndDelete({ _id: id, userId }).lean();
 
 	if (!task) {
 		throw new AppError('Task not found', 404);
