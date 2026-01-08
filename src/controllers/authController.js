@@ -6,31 +6,7 @@ import {
 } from '../services/authService.js';
 import { AppError } from '../middlewares/errorHandler.js';
 import { User } from '../models/userModel.js';
-import { getRefreshTokenExpiresAt } from '../services/tokenService.js';
-
-const REFRESH_COOKIE_NAME = 'refreshToken';
-
-const getCookieOptions = () => {
-	const secure =
-		process.env.COOKIE_SECURE === 'true' || process.env.NODE_ENV === 'production';
-
-	return {
-		httpOnly: true,
-		secure,
-		sameSite: 'strict',
-		path: '/api/auth'
-	};
-};
-
-const setRefreshCookie = (res, refreshToken) => {
-	const options = getCookieOptions();
-	options.expires = getRefreshTokenExpiresAt(refreshToken);
-	res.cookie(REFRESH_COOKIE_NAME, refreshToken, options);
-};
-
-const clearRefreshCookie = (res) => {
-	res.clearCookie(REFRESH_COOKIE_NAME, getCookieOptions());
-};
+import { setRefreshCookie, clearRefreshCookie, REFRESH_COOKIE_NAME } from '../services/cookieService.js';
 
 const toPublicUser = (user) => ({
 	id: user._id?.toString?.() || String(user._id),
