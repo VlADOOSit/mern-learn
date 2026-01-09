@@ -1,4 +1,4 @@
-import { AppError } from './errorHandler.js';
+import { AppError } from '../utils/appError.js';
 import { verifyAccessToken } from '../services/tokenService.js';
 
 export const requireAuth = (req, res, next) => {

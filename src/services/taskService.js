@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { Task } from '../models/taskModel.js';
-import { AppError } from '../middlewares/errorHandler.js';
+import { AppError } from '../utils/appError.js';
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 10;

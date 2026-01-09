@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import { AppError } from '../middlewares/errorHandler.js';
+import { AppError } from '../utils/appError.js';
 import { RefreshToken } from '../models/refreshTokenModel.js';
 
 const requireEnv = (key) => {
