@@ -1,4 +1,4 @@
-import { AppError } from './errorHandler.js';
+import { AppError } from '../utils/appError.js';
 
 export const validate = ({ body, query, params } = {}) => (req, res, next) => {
 	try {

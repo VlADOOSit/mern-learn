@@ -4,7 +4,7 @@ import {
 	refresh,
 	logout
 } from '../services/authService.js';
-import { AppError } from '../middlewares/errorHandler.js';
+import { AppError } from '../utils/appError.js';
 import { User } from '../models/userModel.js';
 import { setRefreshCookie, clearRefreshCookie, REFRESH_COOKIE_NAME } from '../services/cookieService.js';
 

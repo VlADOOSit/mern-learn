@@ -1,11 +1,4 @@
-export class AppError extends Error {
-	constructor(message, statusCode = 500, details) {
-		super(message);
-		this.statusCode = statusCode;
-		this.details = details;
-		Error.captureStackTrace(this, this.constructor);
-	}
-}
+import { AppError } from '../utils/appError.js';
 
 export const notFound = (req, res, next) => {
 	next(new AppError('Resource not found', 404));
@@ -14,10 +7,16 @@ export const notFound = (req, res, next) => {
 export const errorHandler = (err, req, res, next) => {
 	const statusCode = err.statusCode || 500;
 	const message = err.message || 'Internal Server Error';
-	const payload = { error: message };
+	const payload = {
+		error: {
+			message,
+			statusCode,
+			details: err.details,
+		},
+	};
 
-	if (err.details) {
-		payload.details = err.details;
+	if (!payload.error.details) {
+		delete payload.error.details;
 	}
 
 	res.status(statusCode).json(payload);
