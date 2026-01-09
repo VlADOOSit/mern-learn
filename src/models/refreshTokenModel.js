@@ -22,8 +22,7 @@ const refreshTokenSchema = new Schema(
 		},
 		expiresAt: {
 			type: Date,
-			required: true,
-			index: true
+			required: true
 		},
 		replacedByTokenHash: {
 			type: String

@@ -51,3 +51,9 @@ Base URL: `http://localhost:3001`
 - Task statuses: `TODO`, `IN_PROGRESS`, `DONE`
 - Pagination response includes `meta` with `page`, `limit`, `total`, and `pages`.
 - Tasks are scoped to the authenticated user.
+- Error response format:
+  - `error.message` (string)
+  - `error.statusCode` (number)
+  - `error.details` (object, optional)
+  - Example:
+    `{"error":{"message":"Validation error","statusCode":400,"details":{"fieldErrors":{}}}}`

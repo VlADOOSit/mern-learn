@@ -468,10 +468,16 @@ components:
       type: object
       properties:
         error:
-          type: string
-          example: Validation error
-        details:
           type: object
+          properties:
+            message:
+              type: string
+              example: Validation error
+            statusCode:
+              type: integer
+              example: 400
+            details:
+              type: object
   securitySchemes:
     bearerAuth:
       type: http

@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { AppError } from '../src/middlewares/errorHandler.js';
+import { AppError } from '../src/utils/appError.js';
 
 const mockVerifyAccessToken = jest.fn();
 
