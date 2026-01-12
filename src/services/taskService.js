@@ -11,15 +11,10 @@ const validateObjectId = (id) => {
 	}
 };
 
-export const createTask = async (payload, userId) => {
-	const task = await Task.create({ ...payload, userId });
-	return task;
-};
-
-export const getTasks = async (query, userId) => {
+const getTaskList = async (query, baseFilters = {}) => {
 	const { status, page = DEFAULT_PAGE, limit = DEFAULT_LIMIT, sort } = query;
 
-	const filters = { userId };
+	const filters = { ...baseFilters };
 	if (status) {
 		filters.status = status;
 	}
@@ -51,6 +46,19 @@ export const getTasks = async (query, userId) => {
 			pages
 		}
 	};
+};
+
+export const createTask = async (payload, userId) => {
+	const task = await Task.create({ ...payload, userId });
+	return task;
+};
+
+export const getTasks = async (query, userId) => {
+	return getTaskList(query, { userId });
+};
+
+export const getAllTasks = async (query) => {
+	return getTaskList(query);
 };
 
 export const getTaskById = async (id, userId) => {

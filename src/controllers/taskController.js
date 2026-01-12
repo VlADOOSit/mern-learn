@@ -1,6 +1,7 @@
 import {
 	createTask,
 	getTasks,
+	getAllTasks,
 	getTaskById,
 	updateTask,
 	deleteTask
@@ -18,6 +19,15 @@ export const createTaskController = async (req, res, next) => {
 export const listTasksController = async (req, res, next) => {
 	try {
 		const result = await getTasks(req.validated?.query, req.user?.userId);
+		res.json({ data: result.tasks, meta: result.meta });
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const listAllTasksController = async (req, res, next) => {
+	try {
+		const result = await getAllTasks(req.validated?.query);
 		res.json({ data: result.tasks, meta: result.meta });
 	} catch (error) {
 		next(error);
