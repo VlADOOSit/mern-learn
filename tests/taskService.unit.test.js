@@ -100,6 +100,28 @@ describe('taskService', () => {
 		});
 	});
 
+	describe('getAllTasks', () => {
+		it('lists tasks across users with filters, sorting and pagination', async () => {
+			const tasks = [{ _id: '1', title: 'Task 1' }];
+			const queryChain = createQueryChain(tasks);
+			Task.find.mockReturnValue(queryChain);
+			Task.countDocuments.mockResolvedValueOnce(1);
+
+			const query = { status: 'DONE', page: '1', limit: '10', sort: 'createdAt' };
+			const result = await taskService.getAllTasks(query);
+
+			expect(Task.find).toHaveBeenCalledWith({ status: 'DONE' });
+			expect(queryChain.sort).toHaveBeenCalledWith({ createdAt: -1 });
+			expect(queryChain.skip).toHaveBeenCalledWith(0);
+			expect(queryChain.limit).toHaveBeenCalledWith(10);
+			expect(Task.countDocuments).toHaveBeenCalledWith({ status: 'DONE' });
+			expect(result).toEqual({
+				tasks,
+				meta: { page: 1, limit: 10, total: 1, pages: 1 }
+			});
+		});
+	});
+
 	describe('getTaskById', () => {
 		it('throws an AppError when id is invalid', async () => {
 			mongoose.isValidObjectId.mockReturnValueOnce(false);
