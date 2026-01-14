@@ -20,8 +20,7 @@ const getTaskList = async (query, baseFilters = {}) => {
 	}
 
 	const sortField = sort === 'deadline' ? 'deadline' : 'createdAt';
-	const sortOrder = -1;
-
+	const sortOrder = sort === 'deadline' ? 1 : -1;
 	const pageNumber = Number(page) > 0 ? Number(page) : DEFAULT_PAGE;
 	const limitNumber = Number(limit) > 0 ? Number(limit) : DEFAULT_LIMIT;
 	const skip = (pageNumber - 1) * limitNumber;
@@ -94,3 +93,4 @@ export const deleteTask = async (id, userId) => {
 
 	return task;
 };
+
